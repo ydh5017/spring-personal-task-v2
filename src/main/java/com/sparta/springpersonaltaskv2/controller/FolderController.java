@@ -29,4 +29,11 @@ public class FolderController {
     public List<FolderResponseDto> getFolders(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return folderService.getFolders(userDetails.getUser());
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteFolder(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        folderService.deleteFolder(id);
+    }
 }

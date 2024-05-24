@@ -46,4 +46,8 @@ public class FolderService {
         }
         return false;
     }
+
+    public void deleteFolder(Long id) {
+        folderRepository.deleteById(id);
+    }
 }

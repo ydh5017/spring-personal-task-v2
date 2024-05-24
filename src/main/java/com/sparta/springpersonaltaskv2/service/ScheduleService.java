@@ -84,7 +84,6 @@ public class ScheduleService {
     }
 
     public Long deleteSchedule(Long id, User user) {
-        log.info("ScheduleService deleteSchedule");
         Schedule schedule = getValidatedSchedule(id, user);
         scheduleRepository.delete(schedule);
         return schedule.getId();

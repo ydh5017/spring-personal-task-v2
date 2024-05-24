@@ -92,8 +92,12 @@ function openFolder(folderId) {
     $("button.product-folder").removeClass("folder-active");
     if (!folderId) {
         $("button#folder-all").addClass('folder-active');
+        $('#folder-delete-box').hide();
     } else {
         $(`button[value='${folderId}']`).addClass('folder-active');
+        $('#folder-delete-box').show();
+        document.getElementById("folder-delete-btn").value = folderId;
+        document.getElementById("folder-delete-btn").textContent = "'"+folderId+"' 폴더 삭제";
     }
     showschedule(folderId);
 }
@@ -197,6 +201,23 @@ function addInputForScheduleToFolder(scheduleId, button) {
         },
         error(error, status, request) {
             logout();
+        }
+    });
+}
+
+// 폴더 삭제
+function deleteFolder() {
+    const id = $('#folder-delete-btn').val()
+
+    $.ajax({
+        type: "DELETE",
+        url: `/api/folders/${id}`,
+        success: function (response) {
+            alert('폴더가 성공적으로 삭제되었습니다.');
+            window.location.reload();
+        },error: err => {
+            // alert(err.responseJSON.message);
+            alert("폴더 삭제 실패");
         }
     });
 }
