@@ -12,4 +12,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     Page<Schedule> findAllByTitleContains(String title, Pageable pageable);
 
     Page<Schedule> findAllByUserAndTitleContains(User user, String title, Pageable pageable);
+
+    Page<Schedule> findAllByUserAndScheduleFolderList_FolderId(User user, Long folderId, Pageable pageable);
 }

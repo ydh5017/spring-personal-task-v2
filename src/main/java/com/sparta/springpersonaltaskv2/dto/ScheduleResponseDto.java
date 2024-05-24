@@ -1,10 +1,13 @@
 package com.sparta.springpersonaltaskv2.dto;
 
 import com.sparta.springpersonaltaskv2.entity.Schedule;
+import com.sparta.springpersonaltaskv2.entity.ScheduleFolder;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class ScheduleResponseDto {
@@ -16,6 +19,8 @@ public class ScheduleResponseDto {
     private LocalDateTime createdAt;    // 작성일
     private LocalDateTime modifiedAt;   // 수정일
 
+    private List<FolderResponseDto> scheduleFolderList = new ArrayList<>();
+
     public ScheduleResponseDto(Schedule schedule) {
         this.id = schedule.getId();
         this.title = schedule.getTitle();
@@ -23,6 +28,8 @@ public class ScheduleResponseDto {
         this.writer = schedule.getUser().getUsername();
         this.createdAt = schedule.getCreatedAt();
         this.modifiedAt = schedule.getModifiedAt();
+        this.scheduleFolderList = schedule.getScheduleFolderList()
+                .stream().map(s->new FolderResponseDto(s.getFolder())).toList();
     }
 
     @Builder

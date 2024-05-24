@@ -71,7 +71,7 @@ function deleteSchedule(id) {
             window.location.reload();
         },error: err => {
             // alert(err.responseJSON.message);
-            alert("일정 수정 실패");
+            alert("일정 삭제 실패");
         }
     });
 }
@@ -92,7 +92,7 @@ function showschedule(folderId = null) {
     if (folderId) {
         dataSource = `/api/folders/${folderId}/schedules?sortBy=${sorting}&isAsc=${isAsc}`;
     } else if(folderTargetId === undefined) {
-        dataSource = `/api/schedules?sortBy=${sorting}&isAsc=${isAsc}`;
+        dataSource = `/api/schedules?sortBy=${sorting}&isAsc=${isAsc}&folderId=${folderId}`;
     } else {
         dataSource = `/api/folders/${folderTargetId}/schedules?sortBy=${sorting}&isAsc=${isAsc}`;
     }
@@ -114,7 +114,7 @@ function showschedule(folderId = null) {
         showNext: true,
         ajax: {
             beforeSend: function () {
-                $('#schedule-container').html('상품 불러오는 중...');
+                $('#schedule-container').html('일정이 없습니다.');
             },
             error(error, status, request) {
                 if (error.status === 403) {
@@ -128,7 +128,7 @@ function showschedule(folderId = null) {
             $('#schedule-container').empty();
             for (let i = 0; i < response.length; i++) {
                 let schedule = response[i];
-                let tempHtml = addScheduleItem(schedule);
+                let tempHtml = addScheduleItem(schedule, "show");
                 $('#schedule-container').append(tempHtml);
             }
         }
@@ -136,14 +136,17 @@ function showschedule(folderId = null) {
 }
 
 // 일정 HTML 생성
-function addScheduleItem(schedule) {
-    // const folders = schedule.scheduleFolderList.map(folder =>
-    //     `
-    //         <span onclick="openFolder(${folder.id})">
-    //             #${folder.name}
-    //         </span>
-    //     `
-    // );
+function addScheduleItem(schedule, type) {
+    let folders;
+    if (type === "show"){
+        folders = schedule.scheduleFolderList.map(folder =>
+            `
+            <span onclick="openFolder(${folder.id})">
+                #${folder.name}
+            </span>
+        `
+        );
+    }
 
     return `<div class="schedule-card">
                     <div class="card-body">
@@ -162,6 +165,15 @@ function addScheduleItem(schedule) {
                         <button type="button" class="schedule-btn" onclick="openModSchedulePopup(${schedule.id}, '${schedule.title}', '${schedule.content}')">일정 수정</button>
                         <button type="button" class="schedule-btn" onclick="deleteSchedule(${schedule.id})">일정 삭제</button>
                     </div>
+                    <div class="product-tags" style="margin-bottom: 20px;">
+                    ${folders}
+                    <span onclick="addInputForScheduleToFolder(${schedule.id}, this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30px" fill="currentColor" class="bi bi-folder-plus" viewBox="0 0 16 16">
+                            <path d="M.5 3l.04.87a1.99 1.99 0 0 0-.342 1.311l.637 7A2 2 0 0 0 2.826 14H9v-1H2.826a1 1 0 0 1-.995-.91l-.637-7A1 1 0 0 1 2.19 4h11.62a1 1 0 0 1 .996 1.09L14.54 8h1.005l.256-2.819A2 2 0 0 0 13.81 3H9.828a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 6.172 1H2.5a2 2 0 0 0-2 2zm5.672-1a1 1 0 0 1 .707.293L7.586 3H2.19c-.24 0-.47.042-.684.12L1.5 2.98a1 1 0 0 1 1-.98h3.672z"/>
+                            <path d="M13.5 10a.5.5 0 0 1 .5.5V12h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V13h-1.5a.5.5 0 0 1 0-1H13v-1.5a.5.5 0 0 1 .5-.5z"/>
+                        </svg>
+                    </span>
+                </div>
             </div>`;
 }
 
@@ -221,7 +233,7 @@ function execSearch() {
             }
             for (let i = 0; i < response.length; i++) {
                 let schedule = response[i];
-                let tempHtml = addScheduleItem(schedule);
+                let tempHtml = addScheduleItem(schedule, "search");
                 $('#search-result-box').append(tempHtml);
             }
         }

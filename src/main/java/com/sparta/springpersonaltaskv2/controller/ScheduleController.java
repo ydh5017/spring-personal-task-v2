@@ -65,6 +65,26 @@ public class ScheduleController {
     public Long deleteSchedule(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("Deleting schedule with id {}", id);
         return scheduleService.deleteSchedule(id, userDetails.getUser());
+    }
+
+    @PostMapping("/schedules/{scheduleId}/folder")
+    public void addScheduleToFolder(
+            @PathVariable Long scheduleId,
+            @RequestParam Long folderId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        scheduleService.addScheduleToFolder(scheduleId, folderId, userDetails.getUser());
+    }
+
+    @GetMapping("/folders/{folderId}/schedules")
+    public Page<ScheduleResponseDto> getSchedulesInFolder(
+            @PathVariable Long folderId,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("sortBy") String sortBy,
+            @RequestParam("isAsc") boolean isAsc,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return scheduleService.getSchedulesInFolder(folderId, page-1, size, sortBy, isAsc, userDetails.getUser());
     }
 }

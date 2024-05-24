@@ -44,6 +44,15 @@
         <div>
             <button id="folder-all" class="folder-bar-item folder-button product-folder folder-active" onclick="openFolder()">전체</button>
         </div>
+        <div id="fragment">
+            <div th:each="folder : ${folders}">
+                <button class="folder-bar-item folder-button product-folder"
+                        th:value="${folder.id}"
+                        th:utext="${folder.name}"
+                        th:attr="onclick=|openFolder(${folder.id})|">
+                </button>
+            </div>
+        </div>
         <div>
             <button id="folder-add" class="folder-bar-item folder-button product-folder" onclick="openAddFolderPopup()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30px" fill="currentColor" class="bi bi-folder-plus" viewBox="0 0 16 16">
@@ -137,22 +146,7 @@
     </div>
     <div id="search-pagination" class="pagination"></div>
     <br>
-    <div id="search-result-box">
-
-    </div>
-    <div id="container" class="popup-container">
-        <div class="popup">
-            <button id="close" class="close">
-                X
-            </button>
-            <h1>⏰최저가 설정하기</h1>
-            <p>최저가를 설정해두면 선택하신 상품의 최저가가 떴을 때<br/> 표시해드려요!</p>
-            <div>
-                <input type="text" id="myprice" placeholder="200,000">원
-            </div>
-            <button class="cta" onclick="setMyprice()">설정하기</button>
-        </div>
-    </div>
+    <div id="search-result-box"></div>
 </div>
 
 <input type="hidden" id="admin"/>

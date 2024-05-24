@@ -1,13 +1,14 @@
 package com.sparta.springpersonaltaskv2.entity;
 
 import com.sparta.springpersonaltaskv2.dto.ScheduleRequestDto;
-import com.sparta.springpersonaltaskv2.enums.ErrorCodeType;
-import com.sparta.springpersonaltaskv2.exception.ScheduleException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,6 +31,9 @@ public class Schedule extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "schedule", orphanRemoval = true)
+    private List<ScheduleFolder> scheduleFolderList = new ArrayList<>();
 
     public Schedule(ScheduleRequestDto scheduleRequestDto, User user) {
         this.title = scheduleRequestDto.getTitle();
