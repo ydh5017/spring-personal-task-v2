@@ -2,9 +2,10 @@ package com.sparta.springpersonaltaskv2;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@SpringBootApplication(exclude = SecurityAutoConfiguration.class) // security 기능 꺼두기
+@EnableJpaAuditing
+@SpringBootApplication
 public class SpringPersonalTaskV2Application {
 
     public static void main(String[] args) {
