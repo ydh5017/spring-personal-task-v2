@@ -14,6 +14,7 @@
 
     <link rel="stylesheet" href="/css/style.css">
     <script src="/js/basic.js"></script>
+    <script src="/js/schedule.js"></script>
     <title>나만의 셀렉샵</title>
 </head>
 <body>
@@ -53,19 +54,18 @@
         </div>
     </div>
     <div class="pagination">
-        <button onclick="openAddSchedulePopup()">일정 추가</button>
+        <button class="schedule-btn" onclick="openAddSchedulePopup()">일정 추가</button>
         정렬:
-        <select id="sorting" onchange="showProduct()">
+        <select id="sorting" onchange="showschedule()">
             <option value="id">ID</option>
-            <option value="title">상품명</option>
-            <option value="lprice">최저가</option>
+            <option value="title">일정 제목</option>
         </select>
-        <input type="radio" name="isAsc" value="true" onchange="showProduct()" checked/> 오름차순
-        <input type="radio" name="isAsc" value="false" onchange="showProduct()"/> 내림차순
+        <input type="radio" name="isAsc" value="true" onchange="showschedule()" checked/> 오름차순
+        <input type="radio" name="isAsc" value="false" onchange="showschedule()"/> 내림차순
     </div>
     <div id="pagination" class="pagination"></div>
     <br>
-    <div id="product-container">
+    <div id="schedule-container">
     </div>
     <!-- 폴더 추가 팝업 -->
     <div id="container2" class="popup-container">
@@ -98,19 +98,45 @@
             <p>일정을 입력하세요.</p>
             <div id="schedule-input">
                 <input type="text" placeholder="일정 제목을 입력해주세요" name="title" id="title">
-                <input type="text" placeholder="담당자 이름을 입력해주세요" name="writer" id="writer">
-                <input type="text" placeholder="비밀번호를 입력해주세요" name="password" id="password">
                 <textarea class="field" placeholder="일정 내용을 입력해주세요" name="content" id="content" cols="30"
                           rows="10"></textarea>
             </div>
-            <button id="add-schedule-btn" class="cta2" onclick="addFolder()">추가하기</button>
+            <button id="add-schedule-btn" class="cta2" onclick="addSchedule()">추가하기</button>
+        </div>
+    </div>
+    <!-- 일정 수정 팝업 -->
+    <div id="container4" class="popup-container">
+        <div class="popup" style="width:410px; height:auto">
+            <button id="close4" class="close">
+                X
+            </button>
+            <h1>📋 일정 수정하기</h1>
+            <p>일정을 입력하세요.</p>
+            <div id="modSchedule-input">
+                <input type="hidden" id="scheduleId" value="">
+                <input type="text" placeholder="일정 제목을 입력해주세요" name="title" id="modTitle">
+                <textarea class="field" placeholder="일정 내용을 입력해주세요" name="content" id="modContent" cols="30"
+                          rows="10"></textarea>
+            </div>
+            <button id="mod-schedule-btn" class="cta2" onclick="ModSchedule()">수정하기</button>
         </div>
     </div>
 </div>
 <div id="search-area">
+    <div class="pagination">
+        정렬:
+        <select id="search-sorting" onchange="showschedule()">
+            <option value="id">ID</option>
+            <option value="title">일정 제목</option>
+        </select>
+        <input type="radio" name="search-isAsc" value="true" onchange="showschedule()" checked/> 오름차순
+        <input type="radio" name="search-isAsc" value="false" onchange="showschedule()"/> 내림차순
+    </div>
     <div>
         <input type="text" id="query">
     </div>
+    <div id="search-pagination" class="pagination"></div>
+    <br>
     <div id="search-result-box">
 
     </div>
