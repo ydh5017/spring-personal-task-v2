@@ -35,6 +35,9 @@ public class Schedule extends Timestamped {
     @OneToMany(mappedBy = "schedule", orphanRemoval = true)
     private List<ScheduleFolder> scheduleFolderList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "schedule", orphanRemoval = true)
+    private List<File> fileList = new ArrayList<>();
+
     public Schedule(ScheduleRequestDto scheduleRequestDto, User user) {
         this.title = scheduleRequestDto.getTitle();
         this.content = scheduleRequestDto.getContent();

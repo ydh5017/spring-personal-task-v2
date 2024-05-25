@@ -38,6 +38,10 @@ public class FolderService {
         return folderRepository.findAllByUser(user).stream().map(FolderResponseDto::new).toList();
     }
 
+    public void deleteFolder(Long id) {
+        folderRepository.deleteById(id);
+    }
+
     private boolean isExistFolderName(String folderName, List<Folder> existFolderList) {
         for (Folder existFolder : existFolderList) {
             if (folderName.equals(existFolder.getName())) {
@@ -45,9 +49,5 @@ public class FolderService {
             }
         }
         return false;
-    }
-
-    public void deleteFolder(Long id) {
-        folderRepository.deleteById(id);
     }
 }

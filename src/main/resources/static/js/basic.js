@@ -97,7 +97,7 @@ function openFolder(folderId) {
         $(`button[value='${folderId}']`).addClass('folder-active');
         $('#folder-delete-box').show();
         document.getElementById("folder-delete-btn").value = folderId;
-        document.getElementById("folder-delete-btn").textContent = "'"+folderId+"' 폴더 삭제";
+        document.getElementById("folder-delete-btn").textContent = "현재 폴더 삭제";
     }
     showschedule(folderId);
 }

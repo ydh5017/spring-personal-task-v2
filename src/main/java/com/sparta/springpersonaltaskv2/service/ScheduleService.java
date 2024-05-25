@@ -1,17 +1,16 @@
 package com.sparta.springpersonaltaskv2.service;
 
+import com.sparta.springpersonaltaskv2.dto.FileRequestDto;
 import com.sparta.springpersonaltaskv2.dto.ScheduleRequestDto;
 import com.sparta.springpersonaltaskv2.dto.ScheduleResponseDto;
-import com.sparta.springpersonaltaskv2.entity.Folder;
-import com.sparta.springpersonaltaskv2.entity.Schedule;
-import com.sparta.springpersonaltaskv2.entity.ScheduleFolder;
-import com.sparta.springpersonaltaskv2.entity.User;
+import com.sparta.springpersonaltaskv2.entity.*;
 import com.sparta.springpersonaltaskv2.enums.ErrorCodeType;
 import com.sparta.springpersonaltaskv2.enums.UserRoleType;
 import com.sparta.springpersonaltaskv2.exception.ScheduleException;
 import com.sparta.springpersonaltaskv2.repository.FolderRepository;
 import com.sparta.springpersonaltaskv2.repository.ScheduleFolderRepository;
 import com.sparta.springpersonaltaskv2.repository.ScheduleRepository;
+import com.sparta.springpersonaltaskv2.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,6 +20,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j(topic = "ScheduleService test")
 @Service
 @RequiredArgsConstructor
@@ -29,6 +31,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final FolderRepository folderRepository;
     private final ScheduleFolderRepository scheduleFolderRepository;
+    private final FileService fileService;
 
     /**
      * 일정 생성 메서드
@@ -38,7 +41,11 @@ public class ScheduleService {
      * @return 일정정보
      */
     public ScheduleResponseDto createSchedule(ScheduleRequestDto requestDto, User user) {
-        Schedule saveSchedule = scheduleRepository.save(new Schedule(requestDto, user));
+        Schedule schedule = new Schedule(requestDto, user);
+        Schedule saveSchedule = scheduleRepository.save(schedule);
+
+        // 파일 업로드
+        fileService.saveFiles(schedule, requestDto.getFiles());
         return new ScheduleResponseDto(saveSchedule);
     }
 

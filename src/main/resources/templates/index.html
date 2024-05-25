@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/css/style.css">
     <script src="/js/basic.js"></script>
     <script src="/js/schedule.js"></script>
+    <script src="/js/file.js"></script>
     <title>나만의 셀렉샵</title>
 </head>
 <body>
@@ -89,7 +90,6 @@
             <p>폴더를 추가해서 관심상품을 관리해보세요!</p>
             <div id="folders-input">
                 <input type="text" class="folderToAdd" placeholder="추가할 폴더명">
-                <!--                <div class="control" data-v-79d84978="" style="width:20px"><a class="button is-primary is-outlined" data-v-79d84978=""><span class="icon" data-v-79d84978=""><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline&#45;&#45;fa fa-times fa-w-11" data-v-79d84978=""><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" data-v-79d84978="" class=""></path></svg></span></a></div>-->
             </div>
             <div onclick="addFolderInput()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30px" fill="currentColor" class="bi bi-folder-plus" viewBox="0 0 16 16">
@@ -113,6 +113,23 @@
                 <textarea class="field" placeholder="일정 내용을 입력해주세요" name="content" id="content" cols="30"
                           rows="10"></textarea>
             </div>
+            <tr>
+                <td colspan="3">
+                    <div class="file_list">
+                        <div>
+                            <div class="file_input">
+                                <div style="margin: 10px">
+                                    <span>첨부파일</span>
+                                    <button type="button" onclick="addFile();" class="btns fn_add_btn schedule-btn"><span>파일 추가</span></button>
+                                </div>
+                                <label>
+                                    <input type="file" id="files" name="files" onchange="selectFile(this);" multiple/>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
             <button id="add-schedule-btn" class="cta2" onclick="addSchedule()">추가하기</button>
         </div>
     </div>
