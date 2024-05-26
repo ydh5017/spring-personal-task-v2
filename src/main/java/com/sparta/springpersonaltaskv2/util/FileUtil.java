@@ -1,19 +1,29 @@
 package com.sparta.springpersonaltaskv2.util;
 
 import com.sparta.springpersonaltaskv2.dto.FileRequestDto;
+import com.sparta.springpersonaltaskv2.dto.FileResponseDto;
+import com.sparta.springpersonaltaskv2.enums.ErrorCodeType;
 import com.sparta.springpersonaltaskv2.enums.ImgFileType;
+import com.sparta.springpersonaltaskv2.exception.ScheduleException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -78,5 +88,38 @@ public class FileUtil {
             dir.mkdirs();
         }
         return dir.getPath();
+    }
+
+    public void deleteFiles(List<FileResponseDto> files) {
+        if (CollectionUtils.isEmpty(files)) {
+            return;
+        }
+        for (FileResponseDto file : files) {
+            String uploadDate = file.getCreatedAt().toLocalDate().format(DateTimeFormatter.ofPattern("yyMMdd"));
+            deleteFile(uploadDate, file.getSaveName());
+        }
+    }
+
+    private void deleteFile(String uploadDate, String fileName) {
+        String filePath = Paths.get(uploadPath, uploadDate, fileName).toString();
+        File file = new File(filePath);
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
+    public Resource readFileAsResource(FileResponseDto file) {
+        String uploadDate = file.getCreatedAt().toLocalDate().format(DateTimeFormatter.ofPattern("yyMMdd"));
+        String fileName = file.getSaveName();
+        Path filePath = Paths.get(uploadPath, uploadDate, fileName);
+        try {
+            Resource resource = new UrlResource(filePath.toUri());
+            if (!resource.exists() || !resource.isFile()) {
+                throw new ScheduleException(ErrorCodeType.FILE_NOT_FOUND);
+            }
+            return resource;
+        } catch (MalformedURLException e) {
+            throw new ScheduleException(ErrorCodeType.FILE_NOT_FOUND);
+        }
     }
 }

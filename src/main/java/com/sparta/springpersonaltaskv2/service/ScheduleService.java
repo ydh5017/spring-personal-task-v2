@@ -90,9 +90,12 @@ public class ScheduleService {
         return schedule.getId();
     }
 
+    @Transactional
     public Long deleteSchedule(Long id, User user) {
         Schedule schedule = getValidatedSchedule(id, user);
         scheduleRepository.delete(schedule);
+
+        fileService.deleteFiles(schedule.getFileList());
         return schedule.getId();
     }
 
