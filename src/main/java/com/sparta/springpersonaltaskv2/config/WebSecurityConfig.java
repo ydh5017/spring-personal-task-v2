@@ -63,7 +63,10 @@ public class WebSecurityConfig {
                 authorizeHttpRequests
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
                         .requestMatchers("/").permitAll() // 메인 페이지 요청 허가
-                        .requestMatchers("/api/files/download/**").permitAll() // 파일 다운로드 요청 허가
+                        .requestMatchers("/api/files/**").permitAll() // 파일 다운로드 요청 허가
+                        .requestMatchers("/api/schedules/all/**").permitAll()
+                        .requestMatchers("/api/schedules/search/**").permitAll()
+                        .requestMatchers("/api/comments/**").permitAll()
                         .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );

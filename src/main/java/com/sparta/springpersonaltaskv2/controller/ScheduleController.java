@@ -31,6 +31,15 @@ public class ScheduleController {
         return scheduleService.createSchedule(requestDto, userDetails.getUser());
     }
 
+    @GetMapping("/schedules/all")
+    public Page<ScheduleResponseDto> getAllSchedules(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("sortBy") String sortBy,
+            @RequestParam("isAsc") boolean isAsc) {
+        return scheduleService.getAllSchedules(page-1, size, sortBy, isAsc);
+    }
+
     @GetMapping("/schedules")
     public Page<ScheduleResponseDto> getSchedules(
             @RequestParam("page") int page,
@@ -47,9 +56,8 @@ public class ScheduleController {
             @RequestParam("page") int page,
             @RequestParam("size") int size,
             @RequestParam("sortBy") String sortBy,
-            @RequestParam("isAsc") boolean isAsc,
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return scheduleService.searchSchedules(userDetails.getUser(), query, page-1, size, sortBy, isAsc);
+            @RequestParam("isAsc") boolean isAsc) {
+        return scheduleService.searchSchedules(query, page-1, size, sortBy, isAsc);
     }
 
     @PutMapping("/schedules/{id}")

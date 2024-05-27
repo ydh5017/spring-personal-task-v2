@@ -5,11 +5,13 @@ import com.sparta.springpersonaltaskv2.dto.CommentResponseDto;
 import com.sparta.springpersonaltaskv2.security.UserDetailsImpl;
 import com.sparta.springpersonaltaskv2.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/comments")
 @RequiredArgsConstructor

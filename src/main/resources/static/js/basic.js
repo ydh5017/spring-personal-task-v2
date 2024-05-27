@@ -9,48 +9,9 @@ $(document).ready(function () {
         $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
             jqXHR.setRequestHeader('Authorization', auth);
         });
-    } else {
-        window.location.href = host + '/api/user/login-page';
-        return;
     }
 
-    $.ajax({
-        type: 'GET',
-        url: `/api/user-info`,
-        contentType: 'application/json',
-    })
-        .done(function (res, status, xhr) {
-            const username = res.username;
-            const isAdmin = !!res.admin;
-
-            if (!username) {
-                window.location.href = '/api/user/login-page';
-                return;
-            }
-
-            $('#username').text(username);
-            if (isAdmin) {
-                $('#admin').text(true);
-                showschedule();
-            } else {
-                showschedule();
-            }
-
-            // 로그인한 유저의 폴더
-            $.ajax({
-                type: 'GET',
-                url: `/api/user-folder`,
-                error(error) {
-                    logout();
-                }
-            }).done(function (fragment) {
-                $('#fragment').replaceWith(fragment);
-            });
-
-        })
-        .fail(function (jqXHR, textStatus) {
-            logout();
-        });
+    showAllschedule();
 
     // id 가 query 인 녀석 위에서 엔터를 누르면 execSearch() 함수를 실행하라는 뜻입니다.
     $('#query').on('keypress', function (e) {
@@ -68,21 +29,37 @@ $(document).ready(function () {
         $('#container4').removeClass('active');
     })
     $('.nav div.nav-see').on('click', function () {
+        showAllschedule();
         $('div.nav-see').addClass('active');
+        $('div.nav-user').removeClass('active');
         $('div.nav-search').removeClass('active');
 
         $('#see-area').show();
+        $('#user-area').hide();
+        $('#search-area').hide();
+    })
+    $('.nav div.nav-user').on('click', function () {
+        userSchedules()
+        $('div.nav-user').addClass('active');
+        $('div.nav-see').removeClass('active');
+        $('div.nav-search').removeClass('active');
+
+        $('#user-area').show();
+        $('#see-area').hide();
         $('#search-area').hide();
     })
     $('.nav div.nav-search').on('click', function () {
         $('div.nav-see').removeClass('active');
+        $('div.nav-user').removeClass('active');
         $('div.nav-search').addClass('active');
 
         $('#see-area').hide();
+        $('#user-area').hide();
         $('#search-area').show();
     })
 
     $('#see-area').show();
+    $('#user-area').hide();
     $('#search-area').hide();
 })
 

@@ -1,6 +1,5 @@
 package com.sparta.springpersonaltaskv2.service;
 
-import com.sparta.springpersonaltaskv2.dto.FileRequestDto;
 import com.sparta.springpersonaltaskv2.dto.ScheduleRequestDto;
 import com.sparta.springpersonaltaskv2.dto.ScheduleResponseDto;
 import com.sparta.springpersonaltaskv2.entity.*;
@@ -10,7 +9,6 @@ import com.sparta.springpersonaltaskv2.exception.ScheduleException;
 import com.sparta.springpersonaltaskv2.repository.FolderRepository;
 import com.sparta.springpersonaltaskv2.repository.ScheduleFolderRepository;
 import com.sparta.springpersonaltaskv2.repository.ScheduleRepository;
-import com.sparta.springpersonaltaskv2.util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,9 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j(topic = "ScheduleService test")
 @Service
@@ -49,6 +44,16 @@ public class ScheduleService {
         return new ScheduleResponseDto(saveSchedule);
     }
 
+    public Page<ScheduleResponseDto> getAllSchedules(int page, int size, String sortBy, boolean isAsc) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Schedule> scheduleList = scheduleRepository.findAll(pageable);
+
+        return scheduleList.map(ScheduleResponseDto::new);
+    }
+
     @Transactional(readOnly = true)
     public Page<ScheduleResponseDto> getSchedules(User user, int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
@@ -72,19 +77,13 @@ public class ScheduleService {
                 ()-> new ScheduleException(ErrorCodeType.SCHEDULE_NOT_FOUND));
     }
 
-    public Page<ScheduleResponseDto> searchSchedules(User user, String query, int page, int size, String sortBy, boolean isAsc) {
+    public Page<ScheduleResponseDto> searchSchedules(String query, int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        UserRoleType userRoleType = user.getRole();
+        Page<Schedule> scheduleList = scheduleRepository.findAllByTitleContains(query, pageable);
 
-        Page<Schedule> scheduleList;
-        if (userRoleType == UserRoleType.USER) {
-            scheduleList = scheduleRepository.findAllByUserAndTitleContains(user, query, pageable);
-        }else {
-            scheduleList = scheduleRepository.findAllByTitleContains(query, pageable);
-        }
         return scheduleList.map(ScheduleResponseDto::new);
     }
 

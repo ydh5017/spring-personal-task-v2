@@ -1,5 +1,5 @@
 // 일정 등록
-function addComment(scheduleId) {
+function addComment(scheduleId, type) {
     const content = $(`#${scheduleId}-comment-input`).val()
 
     const data = {"scheduleId": scheduleId, "content": content};
@@ -11,7 +11,7 @@ function addComment(scheduleId) {
         data: JSON.stringify(data),
         success: function (response) {
             alert('댓글 등록에 성공하였습니다.');
-            getCommentList(scheduleId);
+            getCommentList(scheduleId, type);
         },error: err => {
             alert(err.responseJSON.message);
         }
@@ -20,14 +20,18 @@ function addComment(scheduleId) {
 }
 
 // 댓글 목록 조회
-function getCommentList(scheduleId) {
-
-    $(`#${scheduleId}-comments-box`).empty()
+function getCommentList(scheduleId, type) {
+    $(`#${scheduleId}-all-comments-box`).empty()
+    $(`#${scheduleId}-user-comments-box`).empty()
+    $(`#${scheduleId}-search-comments-box`).empty()
 
     let tempHtml = `<input type="text" id="${scheduleId}-comment-input" placeholder="댓글을 입력해주세요.">
-                            <button type="button" class="schedule-btn" onclick="addComment(${scheduleId})">등록</button>`;
+                            <button type="button" class="schedule-btn" onclick="addComment(${scheduleId}, '${type}')">등록</button>`;
 
-    $(`#${scheduleId}-comments-box`).append(tempHtml);
+    $(`#${scheduleId}-all-comments-box`).append(tempHtml);
+    $(`#${scheduleId}-user-comments-box`).append(tempHtml);
+    $(`#${scheduleId}-search-comments-box`).append(tempHtml);
+
 
     $.ajax({
         type: 'GET',
@@ -64,7 +68,9 @@ function addCommentHTML(scheduleId, id, content, userName, modifiedAt) {
                                 <button type="button" class="schedule-btn" onclick="deleteComment(${id})">삭제</button>
                             </div>`;
     // 2. #cards-box 에 HTML을 붙인다.
-    $(`#${scheduleId}-comments-box`).append(tempHtml);
+    $(`#${scheduleId}-all-comments-box`).append(tempHtml);
+    $(`#${scheduleId}-user-comments-box`).append(tempHtml);
+    $(`#${scheduleId}-search-comments-box`).append(tempHtml);
 }
 
 // 수정 Input

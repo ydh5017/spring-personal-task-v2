@@ -58,28 +58,28 @@ function removeFile(element) {
 
 // 파일 목록 조회
 function getFileList(scheduleId) {
-    if ($(`#${scheduleId}-files-box`).empty()) {
-        $.ajax({
-            type: 'GET',
-            url: '/api/files',
-            data: {"scheduleId":scheduleId},
-            success: function (response) {
-                for (let i = 0; i < response.length; i++) {
-                    let message = response[i];
-                    let id = message['id'];
-                    let scheduleId = message['scheduleId'];
-                    let fileName = message['fileName'];
-                    let saveName = message['saveName'];
-                    let size = message['size'];
-                    addFileHTML(id, scheduleId, fileName, saveName, size);
-                }
-            },error: err => {
-                alert(err.responseJSON.message);
+    $(`#${scheduleId}-search-files-box`).empty();
+    $(`#${scheduleId}-all-files-box`).empty();
+    $(`#${scheduleId}-user-files-box`).empty();
+
+    $.ajax({
+        type: 'GET',
+        url: '/api/files',
+        data: {"scheduleId":scheduleId},
+        success: function (response) {
+            for (let i = 0; i < response.length; i++) {
+                let message = response[i];
+                let id = message['id'];
+                let scheduleId = message['scheduleId'];
+                let fileName = message['fileName'];
+                let saveName = message['saveName'];
+                let size = message['size'];
+                addFileHTML(id, scheduleId, fileName, saveName, size);
             }
-        })
-    }else {
-        $(`#${scheduleId}-files-box`).empty()
-    }
+        },error: err => {
+            alert(err.responseJSON.message);
+        }
+    })
 }
 
 // 파일 목록 HTML
@@ -89,5 +89,8 @@ function addFileHTML(id, scheduleId, fileName, saveName, size) {
                                 <a href="http://localhost:8080/api/files/download/${id}" onclick="">${fileName}</a>
                             </div>`;
     // 2. #cards-box 에 HTML을 붙인다.
-    $(`#${scheduleId}-files-box`).append(tempHtml);
+    $(`#${scheduleId}-all-files-box`).append(tempHtml);
+    $(`#${scheduleId}-search-files-box`).append(tempHtml);
+    $(`#${scheduleId}-user-files-box`).append(tempHtml);
+
 }
