@@ -177,6 +177,7 @@ function addScheduleItem(schedule, type) {
                         <button type="button" class="schedule-btn" onclick="openModSchedulePopup(${schedule.id}, '${schedule.title}', '${schedule.content}')">일정 수정</button>
                         <button type="button" class="schedule-btn" onclick="deleteSchedule(${schedule.id})">일정 삭제</button>
                         <button type="button" class="schedule-btn" onclick="getFileList(${schedule.id})">첨부파일 보기</button>
+                        <button type="button" class="schedule-btn" onclick="getCommentList(${schedule.id})">댓글 보기</button>
                     </div>
                     <div class="schedule-tags" style="margin-bottom: 20px;">
                         ${folders}
@@ -186,6 +187,8 @@ function addScheduleItem(schedule, type) {
                                 <path d="M13.5 10a.5.5 0 0 1 .5.5V12h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V13h-1.5a.5.5 0 0 1 0-1H13v-1.5a.5.5 0 0 1 .5-.5z"/>
                             </svg>
                         </span>
+                    </div>
+                    <div id="${schedule.id}-comments-box">
                     </div>
             </div>`;
 }

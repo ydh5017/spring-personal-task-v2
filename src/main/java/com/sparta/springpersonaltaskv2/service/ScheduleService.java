@@ -67,6 +67,11 @@ public class ScheduleService {
         return scheduleList.map(ScheduleResponseDto::new);
     }
 
+    public Schedule getScheduleById(Long id) {
+        return scheduleRepository.findById(id).orElseThrow(
+                ()-> new ScheduleException(ErrorCodeType.SCHEDULE_NOT_FOUND));
+    }
+
     public Page<ScheduleResponseDto> searchSchedules(User user, String query, int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
@@ -99,16 +104,6 @@ public class ScheduleService {
         return schedule.getId();
     }
 
-    private Schedule getValidatedSchedule(Long id, User user) {
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(()->
-                new ScheduleException(ErrorCodeType.SCHEDULE_NOT_FOUND));
-
-        if (user.getRole() == UserRoleType.USER && !schedule.getUser().getUsername().equals(user.getUsername())) {
-            throw new ScheduleException(ErrorCodeType.NOT_CREATOR_OR_ADMIN);
-        }
-        return schedule;
-    }
-
     public void addScheduleToFolder(Long scheduleId, Long folderId, User user) {
         Schedule schedule = getValidatedSchedule(scheduleId, user);
         Folder folder = folderRepository.findById(folderId).orElseThrow(
@@ -129,5 +124,15 @@ public class ScheduleService {
 
         Page<Schedule> scheduleList = scheduleRepository.findAllByUserAndScheduleFolderList_FolderId(user, folderId, pageable);
         return scheduleList.map(ScheduleResponseDto::new);
+    }
+
+    private Schedule getValidatedSchedule(Long id, User user) {
+        Schedule schedule = scheduleRepository.findById(id).orElseThrow(()->
+                new ScheduleException(ErrorCodeType.SCHEDULE_NOT_FOUND));
+
+        if (user.getRole() == UserRoleType.USER && !schedule.getUser().getUsername().equals(user.getUsername())) {
+            throw new ScheduleException(ErrorCodeType.NOT_CREATOR_OR_ADMIN);
+        }
+        return schedule;
     }
 }

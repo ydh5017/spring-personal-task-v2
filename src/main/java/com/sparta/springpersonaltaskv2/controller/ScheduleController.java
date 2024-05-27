@@ -1,6 +1,5 @@
 package com.sparta.springpersonaltaskv2.controller;
 
-import com.sparta.springpersonaltaskv2.dto.PagingDto;
 import com.sparta.springpersonaltaskv2.dto.ScheduleRequestDto;
 import com.sparta.springpersonaltaskv2.dto.ScheduleResponseDto;
 import com.sparta.springpersonaltaskv2.security.UserDetailsImpl;
@@ -65,7 +64,6 @@ public class ScheduleController {
     public Long deleteSchedule(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("Deleting schedule with id {}", id);
         return scheduleService.deleteSchedule(id, userDetails.getUser());
     }
 

@@ -5,6 +5,7 @@ import com.sparta.springpersonaltaskv2.entity.User;
 import com.sparta.springpersonaltaskv2.enums.UserRoleType;
 import com.sparta.springpersonaltaskv2.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // ADMIN_TOKEN
-    private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+    @Value("${admin.token}")
+    private String ADMIN_TOKEN;
 
     public void signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();

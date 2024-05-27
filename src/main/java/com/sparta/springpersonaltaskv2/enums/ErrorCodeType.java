@@ -18,7 +18,8 @@ public enum ErrorCodeType {
     NOT_CREATOR_OR_ADMIN(HttpStatus.FORBIDDEN, "해당 일정의 작성자나 관리자가 아닙니다."),
     DUPLICATED_FOLDER(HttpStatus.LOCKED, "폴더명이 중복되었습니다."),
     FOLDER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 폴더가 존재하지 않습니다."),
-    NOT_USER_SCHEDULE_AND_FOLDER(HttpStatus.LOCKED, "사용자의 일정 또는 폴더가 아닙니다.");
+    NOT_USER_SCHEDULE_AND_FOLDER(HttpStatus.LOCKED, "사용자의 일정 또는 폴더가 아닙니다."),
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 댓글이 존재하지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
