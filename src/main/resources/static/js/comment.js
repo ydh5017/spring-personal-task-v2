@@ -1,5 +1,8 @@
 // 일정 등록
 function addComment(scheduleId, type) {
+
+    validUserLogin();
+
     const content = $(`#${scheduleId}-comment-input`).val()
 
     const data = {"scheduleId": scheduleId, "content": content};
@@ -75,6 +78,7 @@ function addCommentHTML(scheduleId, id, content, userName, modifiedAt) {
 
 // 수정 Input
 function modCommentInput(id) {
+    validUserLogin();
     $(`#${id}-mod-comment-box`).show();
 }
 
@@ -96,8 +100,9 @@ function modComment(id) {
     })
 }
 
-// 댓글 수정
+// 댓글 삭제
 function deleteComment(id) {
+    validUserLogin();
     $.ajax({
         type: 'DELETE',
         url: `/api/comments/${id}`,

@@ -1,5 +1,5 @@
-// 회원 일정
-function userSchedules() {
+// 로그인 확인
+function validUserLogin() {
     const auth = getToken();
 
     if (auth !== undefined && auth !== '') {
@@ -11,6 +11,12 @@ function userSchedules() {
         window.location.href = host + '/api/user/login-page';
         return;
     }
+}
+
+// 회원 일정
+function userSchedules() {
+
+    validUserLogin();
 
     $.ajax({
         type: 'GET',
@@ -54,11 +60,15 @@ function userSchedules() {
 
 // 일정 추가 팝업
 function openAddSchedulePopup() {
+    validUserLogin();
     $('#container3').addClass('active');
 }
 
 // 일정 수정 팝업
 function openModSchedulePopup(id, title, content) {
+
+    validUserLogin();
+
     $('#container4').addClass('active');
 
     document.getElementById("scheduleId").value = id;
@@ -68,6 +78,9 @@ function openModSchedulePopup(id, title, content) {
 
 // 일정 등록
 function addSchedule() {
+
+    validUserLogin();
+
     const title = $('#title').val()
     const content = $('#content').val()
 
@@ -98,11 +111,13 @@ function addSchedule() {
     })
         .fail(function(xhr, textStatus, errorThrown) {
             alert("일정 등록 실패");
+
         });
 }
 
 // 일정 수정
 function ModSchedule() {
+
     const id = $('#scheduleId').val()
     const title = $('#modTitle').val()
     const content = $('#modContent').val()
@@ -119,14 +134,14 @@ function ModSchedule() {
             alert('일정이 성공적으로 수정되었습니다.');
             window.location.reload();
         },error: err => {
-            // alert(err.responseJSON.message);
-            alert("일정 수정 실패");
+            alert(err.responseJSON.message);
         }
     });
 }
 
 // 일정 삭제
 function deleteSchedule(id) {
+    validUserLogin();
     $.ajax({
         type: "DELETE",
         url: `/api/schedules/${id}`,
@@ -134,8 +149,7 @@ function deleteSchedule(id) {
             alert('일정이 성공적으로 삭제되었습니다.');
             window.location.reload();
         },error: err => {
-            // alert(err.responseJSON.message);
-            alert("일정 삭제 실패");
+            alert(err.responseJSON.message);
         }
     });
 }
