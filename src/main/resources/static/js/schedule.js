@@ -14,7 +14,6 @@ function validUserLogin() {
                     jqXHR.setRequestHeader('X-AUTH-REFRESH-TOKEN', refresh);
                 });
             }else {
-                alert("@@@@@")
                 $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
                     jqXHR.setRequestHeader('X-AUTH-ACCESS-TOKEN', access);
                 });
