@@ -2,14 +2,34 @@ const host = 'http://' + window.location.host;
 let targetId;
 let folderTargetId;
 
-$(document).ready(function () {
-    const auth = getToken();
+function validLogin() {
+    let access = getAccessToken();
+    const refresh = getRefreshToken();
 
-    if (auth !== undefined && auth !== '') {
-        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-            jqXHR.setRequestHeader('Authorization', auth);
-        });
-    }
+    $.ajax({
+        type: 'GET',
+        url: '/api/user/token-validation',
+        contentType: 'application/json',
+        data: {"accessToken": access},
+        success: function (response) {
+            if (!response.status) {
+                $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+                    jqXHR.setRequestHeader('X-AUTH-REFRESH-TOKEN', refresh);
+                });
+            }else {
+                $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+                    jqXHR.setRequestHeader('X-AUTH-ACCESS-TOKEN', access);
+                });
+            }
+        },error: err => {
+            alert(err.responseJSON.message);
+        }
+    })
+}
+
+$(document).ready(function () {
+
+    validLogin();
 
     showAllschedule();
 
@@ -201,16 +221,27 @@ function deleteFolder() {
 
 function logout() {
     // 토큰 삭제
-    Cookies.remove('Authorization', {path: '/'});
+    Cookies.remove('X-AUTH-ACCESS-TOKEN', {path: '/'});
+    Cookies.remove('X-AUTH-REFRESH-TOKEN', {path: '/'});
     window.location.href = host + '/api/user/login-page';
 }
 
-function getToken() {
-    let auth = Cookies.get('Authorization');
+function getAccessToken() {
+    let access = Cookies.get('X-AUTH-ACCESS-TOKEN');
 
-    if(auth === undefined) {
+    if(access === undefined) {
         return '';
     }
 
-    return auth;
+    return access;
+}
+
+function getRefreshToken() {
+    let refresh = Cookies.get('X-AUTH-REFRESH-TOKEN');
+
+    if(refresh === undefined) {
+        return '';
+    }
+
+    return refresh;
 }

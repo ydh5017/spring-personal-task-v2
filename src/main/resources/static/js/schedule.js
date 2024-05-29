@@ -1,16 +1,29 @@
 // 로그인 확인
 function validUserLogin() {
-    const auth = getToken();
+    let access = getAccessToken();
+    const refresh = getRefreshToken();
 
-    if (auth !== undefined && auth !== '') {
-        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-            jqXHR.setRequestHeader('Authorization', auth);
-        });
-    } else {
-        alert("로그인이 필요한 서비스입니다.")
-        window.location.href = host + '/api/user/login-page';
-        return;
-    }
+    $.ajax({
+        type: 'GET',
+        url: '/api/user/token-validation',
+        contentType: 'application/json',
+        data: {"accessToken": access},
+        success: function (response) {
+            if (!response.status) {
+                $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+                    jqXHR.setRequestHeader('X-AUTH-REFRESH-TOKEN', refresh);
+                });
+            }else {
+                alert("@@@@@")
+                $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+                    jqXHR.setRequestHeader('X-AUTH-ACCESS-TOKEN', access);
+                });
+            }
+        },error: err => {
+            alert("로그인이 필요한 서비스입니다.")
+            window.location.href = host + '/api/user/login-page';
+        }
+    })
 }
 
 // 회원 일정

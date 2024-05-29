@@ -1,5 +1,6 @@
 package com.sparta.springpersonaltaskv2.security;
 
+import com.sparta.springpersonaltaskv2.dto.TokenDto;
 import com.sparta.springpersonaltaskv2.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -38,6 +39,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if (!jwtUtil.validateToken(tokenValue)) {
                 log.error("Token Error");
                 return;
+            }
+
+            if (jwtUtil.isRefreshToken(tokenValue)) {
+                TokenDto tokenDto = jwtUtil.reissuanceToken(tokenValue, req);
+                tokenValue = tokenDto.getAccessToken();
+                res.addHeader(JwtUtil.AUTH_ACCESS_HEADER, JwtUtil.BEARER_PREFIX + tokenValue);
+                res.addHeader(JwtUtil.AUTH_REFRESH_HEADER, JwtUtil.BEARER_PREFIX + tokenDto.getRefreshToken());
             }
 
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);

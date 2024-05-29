@@ -2,7 +2,10 @@ package com.sparta.springpersonaltaskv2.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.springpersonaltaskv2.dto.LoginRequestDto;
+import com.sparta.springpersonaltaskv2.dto.TokenDto;
 import com.sparta.springpersonaltaskv2.enums.UserRoleType;
+import com.sparta.springpersonaltaskv2.repository.RefreshTokenRedisRepository;
+import com.sparta.springpersonaltaskv2.util.IpUtil;
 import com.sparta.springpersonaltaskv2.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,9 +21,11 @@ import java.io.IOException;
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, RefreshTokenRedisRepository refreshTokenRedisRepository) {
         this.jwtUtil = jwtUtil;
+        this.refreshTokenRedisRepository = refreshTokenRedisRepository;
         setFilterProcessesUrl("/api/user/login");
     }
 
@@ -47,8 +52,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         UserRoleType role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
-        String token = jwtUtil.createToken(username, role);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        TokenDto token = jwtUtil.createToken(username, role);
+
+        String ipAddress = IpUtil.getClientIp(request);
+
+        // Redis에 RefreshToken 저장
+        jwtUtil.addRefreshTokenInRedis(ipAddress, username, role, token);
+
+        response.addHeader(JwtUtil.AUTH_ACCESS_HEADER, token.getGrantType() + token.getAccessToken());
+        response.addHeader(JwtUtil.AUTH_REFRESH_HEADER, token.getGrantType() + token.getRefreshToken());
     }
 
     @Override

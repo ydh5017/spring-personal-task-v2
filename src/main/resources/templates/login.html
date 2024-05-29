@@ -58,12 +58,14 @@
             data: JSON.stringify({username: username, password: password}),
         })
             .done(function (res, status, xhr) {
-                const token = xhr.getResponseHeader('Authorization');
+                const accessToken = xhr.getResponseHeader('X-AUTH-ACCESS-TOKEN');
+                const refreshToken = xhr.getResponseHeader('X-AUTH-REFRESH-TOKEN');
 
-                Cookies.set('Authorization', token, {path: '/'})
+                Cookies.set('X-AUTH-ACCESS-TOKEN', accessToken, {path: '/'})
+                Cookies.set('X-AUTH-REFRESH-TOKEN', refreshToken, {path: '/'})
 
                 $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-                    jqXHR.setRequestHeader('Authorization', token);
+                    jqXHR.setRequestHeader('X-AUTH-ACCESS-TOKEN', accessToken);
                 });
 
                 window.location.href = host;

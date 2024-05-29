@@ -6,20 +6,21 @@ import com.sparta.springpersonaltaskv2.enums.UserRoleType;
 import com.sparta.springpersonaltaskv2.security.UserDetailsImpl;
 import com.sparta.springpersonaltaskv2.service.FolderService;
 import com.sparta.springpersonaltaskv2.service.UserService;
+import com.sparta.springpersonaltaskv2.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -29,6 +30,7 @@ public class UserController {
 
     private final UserService userService;
     private final FolderService folderService;
+    private final JwtUtil jwtUtil;
 
     @GetMapping("/user/login-page")
     public String loginPage() {
@@ -71,5 +73,14 @@ public class UserController {
     public String getUserInfo(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         model.addAttribute("folders", folderService.getFolders(userDetails.getUser()));
         return "index :: #fragment";
+    }
+
+    @GetMapping("/user/token-validation")
+    @ResponseBody
+    public ResponseEntity<Map<String, Boolean>> tokenValidation(@RequestParam("accessToken") String accessToken) {
+        boolean valid = jwtUtil.validateToken(accessToken.substring(7));
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("status", valid);
+        return ResponseEntity.ok(response);
     }
 }

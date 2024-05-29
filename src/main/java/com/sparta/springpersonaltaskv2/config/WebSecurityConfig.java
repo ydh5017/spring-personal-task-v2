@@ -1,5 +1,6 @@
 package com.sparta.springpersonaltaskv2.config;
 
+import com.sparta.springpersonaltaskv2.repository.RefreshTokenRedisRepository;
 import com.sparta.springpersonaltaskv2.security.JwtAuthenticationFilter;
 import com.sparta.springpersonaltaskv2.security.JwtAuthorizationFilter;
 import com.sparta.springpersonaltaskv2.security.UserDetailsServiceImpl;
@@ -12,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +28,7 @@ public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final RefreshTokenRedisRepository refreshTokenRedisRepository;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -39,7 +42,7 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil);
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, refreshTokenRedisRepository);
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
         return filter;
     }
@@ -67,6 +70,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/schedules/all/**").permitAll()
                         .requestMatchers("/api/schedules/search/**").permitAll()
                         .requestMatchers("/api/comments/**").permitAll()
+                        .requestMatchers("/api/user/token-validation/**").permitAll()
                         .requestMatchers("/api/user/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
