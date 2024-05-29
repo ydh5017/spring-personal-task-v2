@@ -115,16 +115,15 @@ function addSchedule() {
         url: "/api/schedules",
         contentType: false,
         processData: false,
-        data: formData
-    }).done(function (data, textStatus, xhr) {
-        $('#container3').removeClass('active');
-        alert('일정이 성공적으로 등록되었습니다.');
-        window.location.reload();
-    })
-        .fail(function(xhr, textStatus, errorThrown) {
-            alert("일정 등록 실패");
-
-        });
+        data: formData,
+        success: function (response) {
+            $('#container3').removeClass('active');
+            alert('일정이 성공적으로 등록되었습니다.');
+            window.location.reload();
+        },error: err => {
+            alert(err.responseJSON.message);
+        }
+    });
 }
 
 // 일정 수정

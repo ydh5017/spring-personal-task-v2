@@ -4,6 +4,7 @@ import com.sparta.springpersonaltaskv2.dto.CommentRequestDto;
 import com.sparta.springpersonaltaskv2.dto.CommentResponseDto;
 import com.sparta.springpersonaltaskv2.security.UserDetailsImpl;
 import com.sparta.springpersonaltaskv2.service.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,7 +22,7 @@ public class CommentController {
 
     @PostMapping
     public CommentResponseDto addComment(
-            @RequestBody CommentRequestDto commentRequestDto,
+            @RequestBody @Valid CommentRequestDto commentRequestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentService.addComment(commentRequestDto, userDetails.getUser());
     }
@@ -34,7 +35,7 @@ public class CommentController {
     @PutMapping("/{id}")
     public CommentResponseDto updateComment(
             @PathVariable Long id,
-            @RequestBody CommentRequestDto requestDto,
+            @RequestBody @Valid CommentRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentService.updateComment(id, requestDto, userDetails.getUser());
     }
