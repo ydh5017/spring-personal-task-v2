@@ -1,24 +1,33 @@
 package com.sparta.springpersonaltaskv2.service;
 
 import com.sparta.springpersonaltaskv2.dto.SignupRequestDto;
+import com.sparta.springpersonaltaskv2.dto.TokenDto;
 import com.sparta.springpersonaltaskv2.entity.User;
 import com.sparta.springpersonaltaskv2.enums.ErrorCodeType;
 import com.sparta.springpersonaltaskv2.enums.UserRoleType;
 import com.sparta.springpersonaltaskv2.exception.ScheduleException;
 import com.sparta.springpersonaltaskv2.repository.UserRepository;
+import com.sparta.springpersonaltaskv2.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     @Value("${admin.token}")
     private String ADMIN_TOKEN;
@@ -56,5 +65,17 @@ public class UserService {
         // 사용자 등록
         User user = new User(username, password, email, role);
         userRepository.save(user);
+    }
+
+    public ResponseEntity<?> tokenReissuance(String refreshToken, HttpServletRequest req) {
+        String tokenValue = refreshToken.substring(7);
+        if (jwtUtil.isRefreshToken(tokenValue)) {
+            TokenDto tokenDto = jwtUtil.reissuanceToken(tokenValue, req);
+            Map<String, String> response = new HashMap<>();
+            response.put("accessToken", tokenDto.getGrantType() + tokenDto.getAccessToken());
+            response.put("refreshToken", tokenDto.getGrantType() + tokenDto.getRefreshToken());
+            return ResponseEntity.ok(response);
+        }
+        return null;
     }
 }

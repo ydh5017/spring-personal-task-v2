@@ -2,7 +2,9 @@ package com.sparta.springpersonaltaskv2.util;
 
 import com.sparta.springpersonaltaskv2.entity.RefreshToken;
 import com.sparta.springpersonaltaskv2.dto.TokenDto;
+import com.sparta.springpersonaltaskv2.enums.ErrorCodeType;
 import com.sparta.springpersonaltaskv2.enums.UserRoleType;
+import com.sparta.springpersonaltaskv2.exception.ScheduleException;
 import com.sparta.springpersonaltaskv2.repository.RefreshTokenRedisRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -123,7 +125,8 @@ public class JwtUtil {
     // access 토큰 재발급
     public TokenDto reissuanceToken(String tokenValue, HttpServletRequest req) {
         Claims claims = getUserInfoFromToken(tokenValue);
-        RefreshToken refreshToken = refreshTokenRedisRepository.findById(claims.getSubject()).orElse(null);
+        RefreshToken refreshToken = refreshTokenRedisRepository.findById(claims.getSubject()).orElseThrow(
+                ()-> new ScheduleException(ErrorCodeType.SCHEDULE_NOT_FOUND));
         if (refreshToken != null) {
             String ipAddress = IpUtil.getClientIp(req);
             if (refreshToken.getIp().equals(ipAddress)) {

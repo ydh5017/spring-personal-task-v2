@@ -4,7 +4,7 @@ let folderTargetId;
 
 function validLogin() {
     let access = getAccessToken();
-    const refresh = getRefreshToken();
+    let refresh = getRefreshToken();
 
     $.ajax({
         type: 'GET',
@@ -13,9 +13,22 @@ function validLogin() {
         data: {"accessToken": access},
         success: function (response) {
             if (!response.status) {
-                $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-                    jqXHR.setRequestHeader('X-AUTH-REFRESH-TOKEN', refresh);
-                });
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/user/token-reissuance',
+                    contentType: 'application/json',
+                    data: {"refreshToken": refresh},
+                    success: function (response) {
+                        access = response.accessToken
+                        refresh = response.refreshToken
+                        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+                            jqXHR.setRequestHeader('X-AUTH-ACCESS-TOKEN', access);
+                            jqXHR.setRequestHeader('X-AUTH-REFRESH-TOKEN', refresh);
+                        });
+                    },error: err => {
+                        alert(err.responseJSON.message);
+                    }
+                })
             }else {
                 $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
                     jqXHR.setRequestHeader('X-AUTH-ACCESS-TOKEN', access);

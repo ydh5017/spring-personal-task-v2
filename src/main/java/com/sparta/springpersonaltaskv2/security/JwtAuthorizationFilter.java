@@ -41,12 +41,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            if (jwtUtil.isRefreshToken(tokenValue)) {
-                TokenDto tokenDto = jwtUtil.reissuanceToken(tokenValue, req);
-                tokenValue = tokenDto.getAccessToken();
-                res.addHeader(JwtUtil.AUTH_ACCESS_HEADER, JwtUtil.BEARER_PREFIX + tokenValue);
-                res.addHeader(JwtUtil.AUTH_REFRESH_HEADER, JwtUtil.BEARER_PREFIX + tokenDto.getRefreshToken());
-            }
+//            if (jwtUtil.isRefreshToken(tokenValue)) {
+//                TokenDto tokenDto = jwtUtil.reissuanceToken(tokenValue, req);
+//                tokenValue = tokenDto.getAccessToken();
+//                res.addHeader(JwtUtil.AUTH_ACCESS_HEADER, JwtUtil.BEARER_PREFIX + tokenValue);
+//                res.addHeader(JwtUtil.AUTH_REFRESH_HEADER, JwtUtil.BEARER_PREFIX + tokenDto.getRefreshToken());
+//            }
 
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
 

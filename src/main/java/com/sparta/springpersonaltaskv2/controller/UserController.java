@@ -7,6 +7,7 @@ import com.sparta.springpersonaltaskv2.security.UserDetailsImpl;
 import com.sparta.springpersonaltaskv2.service.FolderService;
 import com.sparta.springpersonaltaskv2.service.UserService;
 import com.sparta.springpersonaltaskv2.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -103,5 +104,17 @@ public class UserController {
         Map<String, Boolean> response = new HashMap<>();
         response.put("status", valid);
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 토큰 재발급
+     * @param refreshToken 토큰
+     * @param req http 요청 객체
+     * @return 토큰
+     */
+    @GetMapping("/user/token-reissuance")
+    @ResponseBody
+    public ResponseEntity<?> tokenReissuance(@RequestParam("refreshToken") String refreshToken, HttpServletRequest req) {
+        return userService.tokenReissuance(refreshToken, req);
     }
 }
