@@ -20,7 +20,7 @@ public class SignupRequestDto {
     @NotEmpty(message = "이메일을 입력해주세요.")
     private String email;
 
-    private boolean admin = false;
+    private boolean admin = false;  // 관리자로 회원가입인지
 
-    private String adminToken = "";
+    private String adminToken = ""; // 관리자 회원가입 토큰
 }

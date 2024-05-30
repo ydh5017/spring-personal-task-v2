@@ -23,6 +23,10 @@ public class UserService {
     @Value("${admin.token}")
     private String ADMIN_TOKEN;
 
+    /**
+     * 회원가입
+     * @param requestDto 회원가입 정보
+     */
     public void signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());

@@ -6,8 +6,8 @@ import lombok.Getter;
 @Getter
 public class FolderResponseDto {
 
-    private Long id;
-    private String name;
+    private Long id;        // 폴더ID
+    private String name;    // 폴더 이름
 
     public FolderResponseDto(Folder folder) {
         this.id = folder.getId();

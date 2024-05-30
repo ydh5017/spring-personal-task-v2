@@ -19,11 +19,21 @@ public class FileController {
 
     private final FileService fileService;
 
+    /**
+     * 파일 정보 목록 조회
+     * @param scheduleId 일정ID
+     * @return 파일 정보 목록
+     */
     @GetMapping
     public List<FileResponseDto> findAllFilesByScheduleId(Long scheduleId) {
         return fileService.findAllFilesByScheduleId(scheduleId);
     }
 
+    /**
+     * 파일 리소스 다운로드
+     * @param id 파일ID
+     * @return 파일 리소스
+     */
     @GetMapping("/download/{id}")
     public ResponseEntity<Resource> downloadFile(@PathVariable Long id) {
         return fileService.getFileResource(id);

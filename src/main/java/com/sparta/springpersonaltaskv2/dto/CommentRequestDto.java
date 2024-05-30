@@ -11,10 +11,10 @@ import lombok.Setter;
 @Setter
 public class CommentRequestDto {
 
-    private Long scheduleId;
+    private Long scheduleId;                    // 일정ID
 
     @NotBlank(message = "댓글 내용을 작성해주세요")
-    private String content;
+    private String content;                     // 댓글 내용
 
     @Builder
     public CommentRequestDto(Long scheduleId, String content) {

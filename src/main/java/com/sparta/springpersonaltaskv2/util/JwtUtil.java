@@ -29,12 +29,10 @@ public class JwtUtil {
     public static final String AUTHORIZATION_KEY = "auth";
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
-    // 토큰 만료시간
-    private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
-
+    //토큰 타입
     public static final String TYPE_ACCESS = "access";
     public static final String TYPE_REFRESH = "refresh";
-
+    // 토큰 만료시간
     public static final long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L;               //30분
     public static final long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;     //7일
 
@@ -116,11 +114,13 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
+    // 토큰 타입이 refresh 토큰인지 판별
     public boolean isRefreshToken(String tokenValue) {
         String type = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(tokenValue).getBody().get("type").toString();
         return TYPE_REFRESH.equals(type);
     }
 
+    // access 토큰 재발급
     public TokenDto reissuanceToken(String tokenValue, HttpServletRequest req) {
         Claims claims = getUserInfoFromToken(tokenValue);
         RefreshToken refreshToken = refreshTokenRedisRepository.findById(claims.getSubject()).orElse(null);
@@ -136,6 +136,7 @@ public class JwtUtil {
         return null;
     }
 
+    // refresh 토큰 redis에 저장
     public void addRefreshTokenInRedis(String ip, String username, UserRoleType role,  TokenDto tokenDto) {
         refreshTokenRedisRepository.save(RefreshToken.builder()
                 .id(username)

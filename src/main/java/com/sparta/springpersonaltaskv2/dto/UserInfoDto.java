@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class UserInfoDto {
-    String username;
-    boolean isAdmin;
+    String username; // 회원 이름
+    boolean isAdmin; // 관리자인지
 }

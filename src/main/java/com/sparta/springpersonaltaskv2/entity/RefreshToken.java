@@ -17,12 +17,12 @@ import org.springframework.data.redis.core.index.Indexed;
 public class RefreshToken {
 
     @Id
-    private String id;
+    private String id;              // 회원 이름
 
-    private String ip;
+    private String ip;              // 로그인 시도한 IP
 
-    private UserRoleType role;
+    private UserRoleType role;      // 회원 권한
 
     @Indexed
-    private String refreshToken;
+    private String refreshToken;    // refreshToken
 }

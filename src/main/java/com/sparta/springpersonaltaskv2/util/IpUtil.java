@@ -12,6 +12,11 @@ public class IpUtil {
     private IpUtil() {
     }
 
+    /**
+     * IpAddress 조회
+     * @param request 요청 객체
+     * @return 클라이언트 IP 주소
+     */
     public static String getClientIp(HttpServletRequest request) {
         String clientIp = null;
         boolean isIpInHeader = false;

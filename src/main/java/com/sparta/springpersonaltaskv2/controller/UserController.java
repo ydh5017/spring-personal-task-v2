@@ -42,6 +42,12 @@ public class UserController {
         return "signup";
     }
 
+    /**
+     * 회원가입
+     * @param requestDto 회원 등록 정보
+     * @param bindingResult Validation 예외 에러
+     * @return login 페이지 반환, 에러 발생 시 signup 페이지 반환
+     */
     @PostMapping("/user/signup")
     public String signup(@Valid SignupRequestDto requestDto, BindingResult bindingResult) {
         // Validation 예외처리
@@ -58,7 +64,11 @@ public class UserController {
         return "redirect:/api/user/login-page";
     }
 
-    // 회원 관련 정보 받기
+    /**
+     * 회원 관련 정보 받기
+     * @param userDetails 회원 정보
+     * @return 회원 정보
+     */
     @GetMapping("/user-info")
     @ResponseBody
     public UserInfoDto getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -69,12 +79,23 @@ public class UserController {
         return new UserInfoDto(username, isAdmin);
     }
 
+    /**
+     * 회원 폴더 목록 조회
+     * @param model 회원 폴더 목록 담을 model
+     * @param userDetails 회원정보
+     * @return index 페이지
+     */
     @GetMapping("/user-folder")
     public String getUserInfo(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         model.addAttribute("folders", folderService.getFolders(userDetails.getUser()));
         return "index :: #fragment";
     }
 
+    /**
+     * access 토큰 유형성 검사
+     * @param accessToken 토큰
+     * @return 토큰 상테 true or false
+     */
     @GetMapping("/user/token-validation")
     @ResponseBody
     public ResponseEntity<Map<String, Boolean>> tokenValidation(@RequestParam("accessToken") String accessToken) {

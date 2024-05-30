@@ -30,6 +30,12 @@ public class FileService {
     private final FileRepository fileRepository;
     private final FileUtil fileUtil;
 
+    /**
+     * 파일 등록
+     * <p>디스크에 파일 업로드 후 파일 정보 DB에 저장</p>
+     * @param schedule 일정 Entity
+     * @param files 파일 목록
+     */
     @Transactional
     public void saveFiles(Schedule schedule, List<MultipartFile> files) {
         if (CollectionUtils.isEmpty(files)) {
@@ -45,6 +51,11 @@ public class FileService {
         fileRepository.saveAll(fileList);
     }
 
+    /**
+     * 다중 파일 업로드
+     * @param multipartFiles 파일 목록
+     * @return DB에 저장할 파일 정보 목록
+     */
     private List<FileRequestDto> uploadFiles(List<MultipartFile> multipartFiles) {
         List<FileRequestDto> files = new ArrayList<>();
         for (MultipartFile multipartFile : multipartFiles) {
@@ -56,6 +67,11 @@ public class FileService {
         return files;
     }
 
+    /**
+     * 다운로드할 파일 리소스 조회
+     * @param id 파일ID
+     * @return 파일 리소스
+     */
     public ResponseEntity<Resource> getFileResource(Long id) {
         FileResponseDto file = fileRepository.findById(id)
                 .stream().map(FileResponseDto::new).findAny().orElseThrow(
@@ -73,10 +89,19 @@ public class FileService {
         }
     }
 
+    /**
+     * 일정별 파일 목록 조회
+     * @param scheduleId 일정ID
+     * @return 파일 목록
+     */
     public List<FileResponseDto> findAllFilesByScheduleId(Long scheduleId) {
         return fileRepository.findAllFilesByScheduleId(scheduleId).stream().map(FileResponseDto::new).toList();
     }
 
+    /**
+     * 다중 파일 삭제 (from Disk)
+     * @param fileList 파일 목록
+     */
     public void deleteFiles(List<File> fileList) {
         fileUtil.deleteFiles(fileList.stream().map(FileResponseDto::new).toList());
     }

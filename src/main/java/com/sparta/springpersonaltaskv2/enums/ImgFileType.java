@@ -19,6 +19,10 @@ public enum ImgFileType {
 
     private String type;
 
+    /**
+     * 파일 확장자 체크
+     * @param fileType 파일 확장자
+     */
     public static void getImgFileType(String fileType) {
         Arrays.stream(ImgFileType.values())
                 .filter(imgFileType -> imgFileType.type.equals(fileType))

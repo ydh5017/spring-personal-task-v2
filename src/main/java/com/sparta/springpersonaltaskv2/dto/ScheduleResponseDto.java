@@ -15,7 +15,7 @@ public class ScheduleResponseDto {
     private Long id;                    // 번호
     private String title;               // 제목
     private String content;             // 내용
-    private String writer;             // 내용
+    private String writer;             // 작성자
     private LocalDateTime createdAt;    // 작성일
     private LocalDateTime modifiedAt;   // 수정일
 

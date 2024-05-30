@@ -33,6 +33,10 @@ public class Comment extends Timestamped {
         this.schedule = schedule;
     }
 
+    /**
+     * 댓글 수정
+     * @param requestDto 댓글 수정 정보
+     */
     public void update(CommentRequestDto requestDto) {
         this.content = requestDto.getContent();
     }

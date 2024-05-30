@@ -35,6 +35,11 @@ public class FileUtil {
     @Value("${file.upload.path}")
     private String uploadPath;
 
+    /**
+     * 단일 파일 업로드
+     * @param multipartFile 파일
+     * @return DB에 저장할 파일 정보
+     */
     public FileRequestDto uploadFile(MultipartFile multipartFile) {
         if (multipartFile.isEmpty()) {
             return null;
@@ -60,6 +65,10 @@ public class FileUtil {
                 .build();
     }
 
+    /**
+     * 파일 변조 체크
+     * @param file 파일
+     */
     private void validImgFile(MultipartFile file) {
         try {
             InputStream inputStream = file.getInputStream();
@@ -72,16 +81,31 @@ public class FileUtil {
         }
     }
 
+    /**
+     * 저장할 파일명 생성
+     * @param filename 원본 파일명
+     * @return 디스크에 저장될 파일명
+     */
     private String generateSaveFilename(final String filename) {
         String uuid = UUID.randomUUID().toString().replaceAll("-", "");
         String extension = StringUtils.getFilenameExtension(filename);
         return uuid + "." + extension;
     }
 
+    /**
+     * 업로드 경로 반환
+     * @param addPath 추가 경로
+     * @return 업로드 경로
+     */
     private String getUploadPath(String addPath) {
         return makeDirectories(uploadPath + File.separator + addPath);
     }
 
+    /**
+     * 업로드 폴더 생성
+     * @param path 업로드 경로
+     * @return 업로드 경로
+     */
     private String makeDirectories(String path) {
         File dir = new File(path);
         if (!dir.exists()) {
@@ -90,6 +114,10 @@ public class FileUtil {
         return dir.getPath();
     }
 
+    /**
+     * 다중 파일 삭제 (from Disk)
+     * @param files 삭제할 파일 목록
+     */
     public void deleteFiles(List<FileResponseDto> files) {
         if (CollectionUtils.isEmpty(files)) {
             return;
@@ -100,6 +128,11 @@ public class FileUtil {
         }
     }
 
+    /**
+     * 단일 파일 삭제 (from Disk)
+     * @param uploadDate 추가 경로
+     * @param fileName 저장한 파일명
+     */
     private void deleteFile(String uploadDate, String fileName) {
         String filePath = Paths.get(uploadPath, uploadDate, fileName).toString();
         File file = new File(filePath);
@@ -108,6 +141,11 @@ public class FileUtil {
         }
     }
 
+    /**
+     * 다운로드할 파일 리소스 조회
+     * @param file 파일 정보
+     * @return 파일 리소스
+     */
     public Resource readFileAsResource(FileResponseDto file) {
         String uploadDate = file.getCreatedAt().toLocalDate().format(DateTimeFormatter.ofPattern("yyMMdd"));
         String fileName = file.getSaveName();

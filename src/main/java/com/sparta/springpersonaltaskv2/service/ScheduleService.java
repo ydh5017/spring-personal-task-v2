@@ -29,11 +29,10 @@ public class ScheduleService {
     private final FileService fileService;
 
     /**
-     * 일정 생성 메서드
-     *
-     * @param requestDto 일정정보
-     * @param user 회원정보
-     * @return 일정정보
+     * 일정 등록
+     * @param requestDto 일정 정보
+     * @param user 회원 정보
+     * @return 일정 정보
      */
     public ScheduleResponseDto createSchedule(ScheduleRequestDto requestDto, User user) {
         Schedule schedule = new Schedule(requestDto, user);
@@ -44,6 +43,14 @@ public class ScheduleService {
         return new ScheduleResponseDto(saveSchedule);
     }
 
+    /**
+     * 모든 일정 목록 조회
+     * @param page 페이지
+     * @param size 개수
+     * @param sortBy 정렬 기준
+     * @param isAsc true : 오름차순, false : 내림차순
+     * @return 페이징된 일정 목록
+     */
     public Page<ScheduleResponseDto> getAllSchedules(int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
@@ -54,6 +61,15 @@ public class ScheduleService {
         return scheduleList.map(ScheduleResponseDto::new);
     }
 
+    /**
+     * 회원 일정 목록 조회
+     * @param user 회원 정보
+     * @param page 페이지
+     * @param size 개수
+     * @param sortBy 정렬 기준
+     * @param isAsc true : 오름차순, false : 내림차순
+     * @return 페이징된 일정 목록
+     */
     @Transactional(readOnly = true)
     public Page<ScheduleResponseDto> getSchedules(User user, int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
@@ -72,11 +88,25 @@ public class ScheduleService {
         return scheduleList.map(ScheduleResponseDto::new);
     }
 
+    /**
+     * 일정 조회
+     * @param id 일정ID
+     * @return 일정 Entity
+     */
     public Schedule getScheduleById(Long id) {
         return scheduleRepository.findById(id).orElseThrow(
                 ()-> new ScheduleException(ErrorCodeType.SCHEDULE_NOT_FOUND));
     }
 
+    /**
+     * 검색 일정 목록 조회
+     * @param query 검색 키워드
+     * @param page 페이지
+     * @param size 개수
+     * @param sortBy 정렬 기준
+     * @param isAsc true : 오름차순, false : 내림차순
+     * @return 페이징된 일정 목록
+     */
     public Page<ScheduleResponseDto> searchSchedules(String query, int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
@@ -87,6 +117,13 @@ public class ScheduleService {
         return scheduleList.map(ScheduleResponseDto::new);
     }
 
+    /**
+     * 일정 수정
+     * @param id 일정 ID
+     * @param requestDto 일정 수정 정보
+     * @param user 회원 정보
+     * @return 일정 ID
+     */
     @Transactional
     public Long updateSchedule(Long id, ScheduleRequestDto requestDto, User user) {
         Schedule schedule = getValidatedSchedule(id, user);
@@ -94,6 +131,12 @@ public class ScheduleService {
         return schedule.getId();
     }
 
+    /**
+     * 일정 삭제
+     * @param id 일정 ID
+     * @param user 회원 정보
+     * @return 일정 ID
+     */
     @Transactional
     public Long deleteSchedule(Long id, User user) {
         Schedule schedule = getValidatedSchedule(id, user);
@@ -103,6 +146,12 @@ public class ScheduleService {
         return schedule.getId();
     }
 
+    /**
+     * 폴더에 일정 등록
+     * @param scheduleId 일정 ID
+     * @param folderId 폴더 ID
+     * @param user 회원 정보
+     */
     public void addScheduleToFolder(Long scheduleId, Long folderId, User user) {
         Schedule schedule = getValidatedSchedule(scheduleId, user);
         Folder folder = folderRepository.findById(folderId).orElseThrow(
@@ -116,6 +165,16 @@ public class ScheduleService {
         scheduleFolderRepository.save(new ScheduleFolder(schedule, folder));
     }
 
+    /**
+     * 폴더별 일정 목록 조회
+     * @param folderId 폴더 ID
+     * @param page 페이지
+     * @param size 개수
+     * @param sortBy 정렬 기준
+     * @param isAsc true : 오름차순, false : 내림차순
+     * @param user 회원 정보
+     * @return
+     */
     public Page<ScheduleResponseDto> getSchedulesInFolder(Long folderId, int page, int size, String sortBy, boolean isAsc, User user) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
@@ -125,6 +184,12 @@ public class ScheduleService {
         return scheduleList.map(ScheduleResponseDto::new);
     }
 
+    /**
+     * 일정 검증
+     * @param id 일정 ID
+     * @param user 회원 정보
+     * @return 일정 Entity
+     */
     private Schedule getValidatedSchedule(Long id, User user) {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(()->
                 new ScheduleException(ErrorCodeType.SCHEDULE_NOT_FOUND));
