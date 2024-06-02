@@ -127,11 +127,9 @@ public class ScheduleHistoryAspect {
 
     /**
      * 일정 삭제 Pointcut
-     * @param id 일정 ID
-     * @param user 회원 정보
      */
-    @Pointcut(value = "execution(* com.sparta.springpersonaltaskv2.service.ScheduleService.deleteSchedule(..)) && args(id, user)", argNames = "id,user")
-    private void deleteSchedulePointcut(Long id, User user) {
+    @Pointcut(value = "execution(* com.sparta.springpersonaltaskv2.service.ScheduleService.deleteSchedule(..))")
+    private void deleteSchedulePointcut() {
     }
 
     /**
@@ -139,7 +137,7 @@ public class ScheduleHistoryAspect {
      * @param id 일정 ID
      * @param user 회원 정보
      */
-    @Before(value = "deleteSchedulePointcut(id, user)", argNames = "id,user")
+    @Before(value = "deleteSchedulePointcut() && args(id, user)", argNames = "id,user")
     public void beforeDeleteSchedule(Long id, User user) {
         log.info("[일정 삭제 전] username : {}, scheduleId : {}", user.getUsername(), id);
     }
