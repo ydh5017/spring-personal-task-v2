@@ -1,5 +1,6 @@
 package com.sparta.springpersonaltaskv2.service;
 
+import com.sparta.springpersonaltaskv2.aop.ScheduleLoggingAOP;
 import com.sparta.springpersonaltaskv2.dto.ScheduleRequestDto;
 import com.sparta.springpersonaltaskv2.dto.ScheduleResponseDto;
 import com.sparta.springpersonaltaskv2.entity.*;
@@ -124,6 +125,7 @@ public class ScheduleService {
      * @param user 회원 정보
      * @return 일정 ID
      */
+    @ScheduleLoggingAOP
     @Transactional
     public Long updateSchedule(Long id, ScheduleRequestDto requestDto, User user) {
         Schedule schedule = getValidatedSchedule(id, user);

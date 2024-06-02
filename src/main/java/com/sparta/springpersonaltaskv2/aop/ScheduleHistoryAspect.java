@@ -42,7 +42,7 @@ public class ScheduleHistoryAspect {
      * <p>
      *     메서드가 실행되고 Advice를 실행한다.
      * </p>
-     * @param joinPoint Aspect가 적용되는 시점
+     * @param joinPoint 조인 포인트 정보
      * @param user 회원 정보
      * @param requestDto 일정 정보
      */
@@ -86,8 +86,8 @@ public class ScheduleHistoryAspect {
      * <p>
      *     메서 실핼 전후로 또는 예외 발생 시 Advice를 실행한다.
      * </p>
-     * @param joinPoint Aspect가 적용되는 시점
-     * @return 메소드 반환 값
+     * @param joinPoint 조인 포인트 정보
+     * @return 조인 포인트 정보
      * @throws Throwable 예외
      */
     @Around(value = "execution(* com.sparta.springpersonaltaskv2.service.ScheduleService.createSchedule(..))")
@@ -97,6 +97,31 @@ public class ScheduleHistoryAspect {
         ScheduleResponseDto proceed = (ScheduleResponseDto) joinPoint.proceed();
         log.info("proceed: " + proceed.getWriter());
         log.info("Around after: " + joinPoint.getSignature().getName());
+        return proceed;
+    }
+
+    /**
+     * 애노테이션을 활용한 로깅 AOP
+     * @param id 일정 ID
+     * @param requestDto 일정 정보
+     * @param user 회원 정보
+     */
+    @Before(value = "@annotation(ScheduleLoggingAOP) && args(id,requestDto, user)", argNames = "id,requestDto,user")
+    public void beforeAddScheduleWithAnnotation(Long id, ScheduleRequestDto requestDto, User user) {
+        log.info("[일정 수정 전] 수정자 : {}, 일정 아이디 {}", user.getUsername(), id);
+    }
+
+    /**
+     * 스프링 빈을 활용한 로깅 AOP
+     * @param joinPoint 조인 포인트 정보
+     * @return 조인 포인트 정보
+     * @throws Throwable 예외
+     */
+    @Around("bean(scheduleService)")
+    public Object arroundScheduleService(ProceedingJoinPoint joinPoint) throws Throwable {
+        long begin = System.currentTimeMillis();
+        Object proceed = joinPoint.proceed();
+        log.info("[ScheduleService 수행시간] {}초", (double) (System.currentTimeMillis() - begin)/1000);
         return proceed;
     }
 }
