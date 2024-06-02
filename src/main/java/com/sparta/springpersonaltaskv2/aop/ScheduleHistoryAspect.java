@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @RequiredArgsConstructor
-@Slf4j(topic = "LoginHistoryAspect")
+@Slf4j(topic = "ScheduleHistoryAspect")
 public class ScheduleHistoryAspect {
 
     private final ScheduleHistoryRepository scheduleHistoryRepository;
