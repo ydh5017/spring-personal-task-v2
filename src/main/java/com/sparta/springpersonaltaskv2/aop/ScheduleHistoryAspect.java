@@ -9,6 +9,7 @@ import com.sparta.springpersonaltaskv2.repository.ScheduleHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +40,7 @@ public class ScheduleHistoryAspect {
     /**
      * After : 일정 등록 메서드 실행 후 로깅 AOP
      * <p>
-     *     메서드가 실행되고 반환되기 전에 Advice를 실행한다.
+     *     메서드가 실행되고 Advice를 실행한다.
      * </p>
      * @param joinPoint Aspect가 적용되는 시점
      * @param user 회원 정보
@@ -78,5 +79,24 @@ public class ScheduleHistoryAspect {
     public void afterAddScheduleFailure(Throwable e) {
         log.error("[일정 등록 실패] message : {}", e.getMessage());
 
+    }
+
+    /**
+     * Around : 일정 등록 전후 로깅 AOP
+     * <p>
+     *     메서 실핼 전후로 또는 예외 발생 시 Advice를 실행한다.
+     * </p>
+     * @param joinPoint Aspect가 적용되는 시점
+     * @return 메소드 반환 값
+     * @throws Throwable 예외
+     */
+    @Around(value = "execution(* com.sparta.springpersonaltaskv2.service.ScheduleService.createSchedule(..))")
+    public Object aroundAddSchedule(ProceedingJoinPoint joinPoint) throws Throwable {
+        log.info("Around before: " + joinPoint.getSignature().getName());
+        // joinPoint.proceed()를 기준으로 메서드 실행 전후로 나뉨
+        ScheduleResponseDto proceed = (ScheduleResponseDto) joinPoint.proceed();
+        log.info("proceed: " + proceed.getWriter());
+        log.info("Around after: " + joinPoint.getSignature().getName());
+        return proceed;
     }
 }
