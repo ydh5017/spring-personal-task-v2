@@ -124,4 +124,23 @@ public class ScheduleHistoryAspect {
         log.info("[ScheduleService 수행시간] {}초", (double) (System.currentTimeMillis() - begin)/1000);
         return proceed;
     }
+
+    /**
+     * 일정 삭제 Pointcut
+     * @param id 일정 ID
+     * @param user 회원 정보
+     */
+    @Pointcut(value = "execution(* com.sparta.springpersonaltaskv2.service.ScheduleService.deleteSchedule(..)) && args(id, user)", argNames = "id,user")
+    private void deleteSchedulePointcut(Long id, User user) {
+    }
+
+    /**
+     * Pointcut을 활용한 로깅 AOP
+     * @param id 일정 ID
+     * @param user 회원 정보
+     */
+    @Before(value = "deleteSchedulePointcut(id, user)", argNames = "id,user")
+    public void beforeDeleteSchedule(Long id, User user) {
+        log.info("[일정 삭제 전] username : {}, scheduleId : {}", user.getUsername(), id);
+    }
 }
