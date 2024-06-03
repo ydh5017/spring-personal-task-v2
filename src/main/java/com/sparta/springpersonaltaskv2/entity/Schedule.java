@@ -1,18 +1,19 @@
 package com.sparta.springpersonaltaskv2.entity;
 
 import com.sparta.springpersonaltaskv2.dto.ScheduleRequestDto;
+import com.sparta.springpersonaltaskv2.enums.ErrorCodeType;
+import com.sparta.springpersonaltaskv2.enums.UserRoleType;
+import com.sparta.springpersonaltaskv2.exception.ScheduleException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "schedule")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,6 +46,16 @@ public class Schedule extends Timestamped {
         this.title = scheduleRequestDto.getTitle();
         this.content = scheduleRequestDto.getContent();
         this.user = user;
+    }
+
+    /**
+     * 회원 권한 확인
+     * @param user 회원 정보
+     */
+    public void validate(User user) {
+        if (user.getRole() == UserRoleType.USER && !this.user.getUsername().equals(user.getUsername())) {
+            throw new ScheduleException(ErrorCodeType.NOT_CREATOR_OR_ADMIN);
+        }
     }
 
     /**

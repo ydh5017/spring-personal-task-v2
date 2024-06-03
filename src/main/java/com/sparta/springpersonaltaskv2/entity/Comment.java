@@ -1,14 +1,15 @@
 package com.sparta.springpersonaltaskv2.entity;
 
 import com.sparta.springpersonaltaskv2.dto.CommentRequestDto;
+import com.sparta.springpersonaltaskv2.enums.ErrorCodeType;
+import com.sparta.springpersonaltaskv2.enums.UserRoleType;
+import com.sparta.springpersonaltaskv2.exception.ScheduleException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 public class Comment extends Timestamped {
 
@@ -31,6 +32,12 @@ public class Comment extends Timestamped {
         this.content = requestDto.getContent();
         this.user = user;
         this.schedule = schedule;
+    }
+
+    public void validate(User user) {
+        if (user.getRole() == UserRoleType.USER && !this.user.getId().equals(user.getId())) {
+            throw new ScheduleException(ErrorCodeType.NOT_CREATOR_OR_ADMIN);
+        }
     }
 
     /**

@@ -94,7 +94,7 @@ public class ScheduleService {
      * @param id 일정ID
      * @return 일정 Entity
      */
-    public Schedule getScheduleById(Long id) {
+    protected Schedule getScheduleById(Long id) {
         return scheduleRepository.findById(id).orElseThrow(
                 ()-> new ScheduleException(ErrorCodeType.SCHEDULE_NOT_FOUND));
     }
@@ -196,9 +196,7 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(()->
                 new ScheduleException(ErrorCodeType.SCHEDULE_NOT_FOUND));
 
-        if (user.getRole() == UserRoleType.USER && !schedule.getUser().getUsername().equals(user.getUsername())) {
-            throw new ScheduleException(ErrorCodeType.NOT_CREATOR_OR_ADMIN);
-        }
+        schedule.validate(user);
         return schedule;
     }
 }

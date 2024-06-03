@@ -156,19 +156,15 @@ function addFolder() {
         type: "POST",
         url: `/api/folders`,
         contentType: "application/json",
-        data: JSON.stringify({folderNames})
-    }).done(function (data, textStatus, xhr) {
-        if(data !== '') {
-            alert("중복된 폴더입니다.");
-            return;
+        data: JSON.stringify({folderNames}),
+        success: function (response) {
+            $('#container2').removeClass('active');
+            alert('성공적으로 등록되었습니다.');
+            window.location.reload();
+        },error: err => {
+            alert(err.responseJSON.message);
         }
-        $('#container2').removeClass('active');
-        alert('성공적으로 등록되었습니다.');
-        window.location.reload();
-    })
-        .fail(function(xhr, textStatus, errorThrown) {
-            alert("중복된 폴더입니다.");
-        });
+    });
 }
 
 // 폴더에 일정 추가

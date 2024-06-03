@@ -1,6 +1,7 @@
 package com.sparta.springpersonaltaskv2.controller;
 
 import com.sparta.springpersonaltaskv2.dto.SignupRequestDto;
+import com.sparta.springpersonaltaskv2.dto.TokenDto;
 import com.sparta.springpersonaltaskv2.dto.UserInfoDto;
 import com.sparta.springpersonaltaskv2.enums.UserRoleType;
 import com.sparta.springpersonaltaskv2.security.UserDetailsImpl;
@@ -115,6 +116,10 @@ public class UserController {
     @GetMapping("/user/token-reissuance")
     @ResponseBody
     public ResponseEntity<?> tokenReissuance(@RequestParam("refreshToken") String refreshToken, HttpServletRequest req) {
-        return userService.tokenReissuance(refreshToken, req);
+        TokenDto tokenDto = userService.tokenReissuance(refreshToken, req);
+        Map<String, String> response = new HashMap<>();
+        response.put("accessToken", tokenDto.getGrantType() + tokenDto.getAccessToken());
+        response.put("refreshToken", tokenDto.getGrantType() + tokenDto.getRefreshToken());
+        return ResponseEntity.ok(response);
     }
 }

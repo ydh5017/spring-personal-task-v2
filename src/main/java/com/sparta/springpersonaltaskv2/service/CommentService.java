@@ -6,7 +6,6 @@ import com.sparta.springpersonaltaskv2.entity.Comment;
 import com.sparta.springpersonaltaskv2.entity.Schedule;
 import com.sparta.springpersonaltaskv2.entity.User;
 import com.sparta.springpersonaltaskv2.enums.ErrorCodeType;
-import com.sparta.springpersonaltaskv2.enums.UserRoleType;
 import com.sparta.springpersonaltaskv2.exception.ScheduleException;
 import com.sparta.springpersonaltaskv2.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -83,9 +81,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(id).orElseThrow(
                 ()-> new ScheduleException(ErrorCodeType.COMMENT_NOT_FOUND));
 
-        if (user.getRole() == UserRoleType.USER && !comment.getUser().getId().equals(user.getId())) {
-            throw new ScheduleException(ErrorCodeType.NOT_CREATOR_OR_ADMIN);
-        }
+        comment.validate(user);
         return comment;
     }
 }

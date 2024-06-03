@@ -28,12 +28,9 @@ public class FolderService {
         List<Folder> folderList = new ArrayList<>();
 
         for (String folderName : folderNames) {
-            if (!isExistFolderName(folderName, existFolderList)) {
-                Folder folder = new Folder(folderName, user);
-                folderList.add(folder);
-            }else {
-                throw new ScheduleException(ErrorCodeType.DUPLICATED_FOLDER);
-            }
+            checkExistFolderName(folderName, existFolderList);
+            Folder folder = new Folder(folderName, user);
+            folderList.add(folder);
         }
 
         folderRepository.saveAll(folderList);
@@ -62,12 +59,11 @@ public class FolderService {
      * @param existFolderList 폴더 목록
      * @return true or false
      */
-    private boolean isExistFolderName(String folderName, List<Folder> existFolderList) {
+    private void checkExistFolderName(String folderName, List<Folder> existFolderList) {
         for (Folder existFolder : existFolderList) {
             if (folderName.equals(existFolder.getName())) {
-                return true;
+                throw new ScheduleException(ErrorCodeType.DUPLICATED_FOLDER);
             }
         }
-        return false;
     }
 }

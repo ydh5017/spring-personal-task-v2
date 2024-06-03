@@ -67,14 +67,10 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public ResponseEntity<?> tokenReissuance(String refreshToken, HttpServletRequest req) {
+    public TokenDto tokenReissuance(String refreshToken, HttpServletRequest req) {
         String tokenValue = refreshToken.substring(7);
         if (jwtUtil.isRefreshToken(tokenValue)) {
-            TokenDto tokenDto = jwtUtil.reissuanceToken(tokenValue, req);
-            Map<String, String> response = new HashMap<>();
-            response.put("accessToken", tokenDto.getGrantType() + tokenDto.getAccessToken());
-            response.put("refreshToken", tokenDto.getGrantType() + tokenDto.getRefreshToken());
-            return ResponseEntity.ok(response);
+            return jwtUtil.reissuanceToken(tokenValue, req);
         }
         return null;
     }
